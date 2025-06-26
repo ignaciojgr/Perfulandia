@@ -30,23 +30,4 @@ public class PaymentRequest {
     
     private String customerEmail;
     private String description;    
-
-    public PaymentRequest(String orderId, BigDecimal amount, String redirectUrl) {
-        this.orderId = orderId;
-        this.amount = amount;
-        this.redirectUrl = redirectUrl;
-        this.currency = "CLP"; 
-    }    
-    public boolean isValid() {
-        return orderId != null && !orderId.trim().isEmpty() &&
-               amount != null && amount.compareTo(BigDecimal.ZERO) > 0 &&
-               redirectUrl != null && !redirectUrl.trim().isEmpty();
-    }
-
-    public String getDescriptionOrDefault() {
-        if (description != null && !description.trim().isEmpty()) {
-            return description;
-        }
-        return "Payment for order: " + orderId;
-    }
 }

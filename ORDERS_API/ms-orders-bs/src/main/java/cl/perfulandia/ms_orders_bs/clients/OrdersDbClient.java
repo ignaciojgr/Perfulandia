@@ -17,7 +17,9 @@ public interface OrdersDbClient {
     ResponseEntity<List<OrderDTO>> getOrdersByUserId(@PathVariable String userId);
 
     @PostMapping("/api/v1/orders")
-    ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO);    @PutMapping("/api/v1/orders/{orderId}")
+    ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO);    
+    
+    @PutMapping("/api/v1/orders/{orderId}")
     ResponseEntity<OrderDTO> updateOrder(@PathVariable String orderId, @RequestBody OrderDTO orderDTO);
 
     @PutMapping("/api/v1/orders/{orderId}/status/{statusCode}")

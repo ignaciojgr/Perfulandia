@@ -1,4 +1,4 @@
-package cl.perfulandia.ms_orders_bs.client;
+package cl.perfulandia.ms_orders_bs.clients;
 
 import cl.perfulandia.ms_orders_bs.model.dto.CatalogItemDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,7 +17,8 @@ public interface CatalogApiClient {
     
     @GetMapping("/api/catalog/items")
     ResponseEntity<List<CatalogItemDTO>> getActiveItems();
-      @GetMapping("/api/catalog/items/search")
+    
+    @GetMapping("/api/catalog/items/search")
     ResponseEntity<List<CatalogItemDTO>> searchItems(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String category,

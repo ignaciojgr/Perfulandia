@@ -19,7 +19,6 @@ public class PedidosIntegrationService {
     PedidosApiClient pedidosApiClient;
 
     public List<PedidoApiDTO> createPedidosForOrder(OrderDTO order) {
-        log.info("Creating pedidos for order: {}", order.getOrderId());
         
         List<PedidoApiDTO> createdPedidos = new ArrayList<>();
         
@@ -30,19 +29,10 @@ public class PedidosIntegrationService {
                 
                 if (createdPedido != null) {
                     createdPedidos.add(createdPedido);
-                    log.info("Created pedido ID: {} for product: {}", 
-                            createdPedido.getId(), item.getProductId());
-                } else {
-                    log.error("Failed to create pedido for product: {}", item.getProductId());
                 }
             }
-            
-            log.info("Successfully created {} pedidos for order: {}", 
-                    createdPedidos.size(), order.getOrderId());
-            
         } catch (Exception e) {
-            log.error("Error creating pedidos for order: {}", order.getOrderId(), e);
-            throw new PedidosIntegrationException("Failed to create pedidos: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to create pedidos");
         }
         
         return createdPedidos;
@@ -57,10 +47,5 @@ public class PedidosIntegrationService {
         pedido.setEstado("CREADO");
         
         return pedido;
-    }
-    public static class PedidosIntegrationException extends RuntimeException {
-        public PedidosIntegrationException(String message, Throwable cause) {
-            super(message, cause);
-        }
     }
 }

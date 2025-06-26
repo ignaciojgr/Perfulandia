@@ -32,7 +32,6 @@ public class OrderFlowManager {
     PedidosIntegrationService pedidosIntegrationService;    
 
     public OrderFlowResult executeCompleteOrderFlow(OrderDTO orderRequest) {
-        log.info("Starting complete order flow for user: {}", orderRequest.getUserId());
         
         OrderFlowResult result = new OrderFlowResult();
         String orderId = generateOrderId();
@@ -42,17 +41,14 @@ public class OrderFlowManager {
         
         try {
             validationService.validateOrderData(orderRequest);
-            log.info("Order validation completed for: {}", orderId);
             ResponseEntity<OrderDTO> response = ordersDbClient.createOrder(orderRequest);
             OrderDTO createdOrder = response.getBody();
             
             if (createdOrder == null) {
                 throw new RuntimeException("Failed to create order in database");
             }
-            log.info("Order created in database: {}", orderId);
             
             pedidosIntegrationService.createPedidosForOrder(createdOrder);
-            log.info("Pedidos created for order: {}", orderId);
             PaymentInitiationResponse paymentResponse = paymentCoordinator.initiatePaymentForOrder(createdOrder);
             
             if (paymentResponse == null) {
@@ -87,15 +83,11 @@ public class OrderFlowManager {
             result.setFinalOrder(createdOrder);
             result.setPaymentResponse(paymentResponse);
             result.setSuccess(true);
-            result.addMessage("Order flow completed successfully");
             
-            log.info("Order flow completed successfully for order: {}", orderId);
             return result;
             
         } catch (Exception e) {
-            log.error("Order flow failed for order: {}", orderId, e);
             result.setSuccess(false);
-            result.addMessage("Order flow failed: " + e.getMessage());
             return result;
         }
     } 
@@ -115,7 +107,6 @@ public class OrderFlowManager {
             case "CANCELLED": return 7L;
             case "FAILED": return 8L;
             default: 
-                log.warn("Unknown status: {}, defaulting to CREATED", status);
                 return 1L; 
         }
     }

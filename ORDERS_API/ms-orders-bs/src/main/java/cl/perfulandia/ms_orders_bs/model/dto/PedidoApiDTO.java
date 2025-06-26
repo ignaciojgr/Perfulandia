@@ -13,11 +13,4 @@ public class PedidoApiDTO {
     private Long productoId;     
     private Integer cantidad;
     private String estado;
-
-    public PedidoApiDTO(Long clienteId, Long productoId, Integer cantidad, String estado) {
-        this.clienteId = clienteId;
-        this.productoId = productoId;
-        this.cantidad = cantidad;
-        this.estado = estado;
-    }
 }

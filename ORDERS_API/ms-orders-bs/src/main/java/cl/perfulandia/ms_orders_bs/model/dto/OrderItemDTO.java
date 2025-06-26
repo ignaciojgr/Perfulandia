@@ -24,10 +24,4 @@ public class OrderItemDTO {
     private List<String> imageUrls;
     private Integer availableStock;
     private Boolean isActive;
-    public OrderItemDTO(String productId, Integer quantity, BigDecimal unitPrice) {
-        this.productId = productId;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.totalPrice = unitPrice.multiply(new BigDecimal(quantity));
-    }
 }

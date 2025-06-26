@@ -20,35 +20,28 @@ public class OrderBusinessService {
     OrdersDbClient ordersDbClient;
 
     public OrderDTO createOrderWithPayment(OrderDTO orderDTO) {
-        log.info("Creating order with payment for user: {}", orderDTO.getUserId());
         
         try {
             OrderFlowResult flowResult = orderFlowManager.executeCompleteOrderFlow(orderDTO);
             
             if (!flowResult.isSuccess()) {
-                log.error("Order flow failed: {}", flowResult.getSummary());
-                throw new RuntimeException("Order processing failed: " + flowResult.getErrorMessage());
+                throw new RuntimeException("Order processing failed");
             }
-            
-            log.info("Order flow completed successfully: {}", flowResult.getSummary());
             return flowResult.getFinalOrder();
             
         } catch (Exception e) {
-            log.error("Error in order creation process for user: {}", orderDTO.getUserId(), e);
-            throw new RuntimeException("Failed to create order: " + e.getMessage());
+            throw new RuntimeException("Failed to create order");
         }
     }    
     
     public OrderDTO getOrderById(String orderId) {
-        log.debug("Retrieving order by ID: {}", orderId);
         return ordersDbClient.getOrderById(orderId).getBody();
     }
 
     public List<OrderDTO> getOrdersByUserId(String userId) {
-        log.debug("Retrieving orders for user: {}", userId);
         return ordersDbClient.getOrdersByUserId(userId).getBody();
-    }    public OrderDTO updateOrderStatus(String orderId, String status) {
-        log.info("Updating order status for order: {} to status: {}", orderId, status);
+    }    
+    public OrderDTO updateOrderStatus(String orderId, String status) {
         Long statusCode = mapStatusToCode(status);
         return ordersDbClient.updateOrderStatus(orderId, statusCode).getBody();
     }
@@ -64,7 +57,6 @@ public class OrderBusinessService {
             case "CANCELLED": return 7L;
             case "FAILED": return 8L;
             default: 
-                log.warn("Unknown status: {}, defaulting to CREATED", status);
                 return 1L;
         }
     }

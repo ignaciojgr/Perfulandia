@@ -1,6 +1,6 @@
 package cl.perfulandia.ms_orders_bs.service;
 
-import cl.perfulandia.ms_orders_bs.client.CatalogApiClient;
+import cl.perfulandia.ms_orders_bs.clients.CatalogApiClient;
 import cl.perfulandia.ms_orders_bs.model.dto.CatalogItemDTO;
 import cl.perfulandia.ms_orders_bs.model.dto.OrderItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +26,13 @@ public class CatalogEnrichmentService {
         for (OrderItemDTO item : orderItems) {
             try {
                 enrichSingleOrderItem(item);
-            } catch (Exception e) {
-                log.error("Failed to enrich order item with productId {}: {}", item.getProductId(), e.getMessage());
-                
+            } catch (Exception e) { 
+                throw new RuntimeException("Failed to enrich product information for item: " + item.getProductId());               
             }
         }
     }
     private void enrichSingleOrderItem(OrderItemDTO orderItem) {
-        Long productId = Long.parseLong(orderItem.getProductId());
-        
-        log.info("Fetching catalog information for product ID: {}", productId);
-        
+        Long productId = Long.parseLong(orderItem.getProductId());        
         ResponseEntity<CatalogItemDTO> response = catalogApiClient.getItemById(productId);
         CatalogItemDTO catalogItem = response.getBody();
         
@@ -52,16 +48,9 @@ public class CatalogEnrichmentService {
             orderItem.setIsActive(catalogItem.getIsActive());
             if (catalogItem.getPrice() != null) {
                 orderItem.setUnitPrice(BigDecimal.valueOf(catalogItem.getPrice()));
-                log.debug("Set unit price from catalog: {} for product {}", 
-                         catalogItem.getPrice(), productId);
             } else {
-                log.warn("No price available in catalog for product ID: {}", productId);
                 throw new RuntimeException("Product price not available in catalog: " + productId);
             }
-            
-            log.info("Successfully enriched order item: {} - {}", productId, catalogItem.getName());
-        } else {
-            log.warn("No catalog information found for product ID: {}", productId);
         }
     }
 
@@ -76,27 +65,21 @@ public class CatalogEnrichmentService {
                 CatalogItemDTO catalogItem = response.getBody();
                 
                 if (catalogItem == null) {
-                    log.error("Product not found in catalog: {}", productId);
                     return false;
                 }
                 
                 if (!catalogItem.getIsActive()) {
-                    log.error("Product is inactive: {}", productId);
                     return false;
                 }
                 
                 if (catalogItem.getStockQuantity() < item.getQuantity()) {
-                    log.error("Insufficient stock for product {}: requested={}, available={}", 
-                             productId, item.getQuantity(), catalogItem.getStockQuantity());
                     return false;
                 }
                 
             } catch (Exception e) {
-                log.error("Validation failed for product {}: {}", item.getProductId(), e.getMessage());
                 return false;
             }
         }
-        
         return true;
     }
 }
