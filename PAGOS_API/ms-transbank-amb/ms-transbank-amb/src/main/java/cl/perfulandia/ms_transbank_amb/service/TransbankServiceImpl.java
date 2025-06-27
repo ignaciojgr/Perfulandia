@@ -39,7 +39,8 @@ public class TransbankServiceImpl implements TransbankService {
                 transbankConfig.getCommerceCode(), transbankConfig.getApiUrl());
         
         try {
-            log.info("Making request to Transbank API via Feign...");            TransbankCreateResponse transbankResponse = transbankFeignClient.createTransaction(
+            log.info("Making request to Transbank API via Feign...");            
+            TransbankCreateResponse transbankResponse = transbankFeignClient.createTransaction(
                 transbankConfig.getCommerceCode(),
                 transbankConfig.getApiKey(),
                 transbankRequest
@@ -83,7 +84,6 @@ public class TransbankServiceImpl implements TransbankService {
             throw new RuntimeException("Return URL is required and cannot be empty");
         }
         
-        // Additional Transbank-specific validations
         if (request.getBuyOrder().length() > 26) {
             throw new RuntimeException("Buy order cannot exceed 26 characters");
         }

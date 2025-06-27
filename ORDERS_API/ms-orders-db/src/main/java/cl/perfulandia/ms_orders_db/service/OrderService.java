@@ -57,21 +57,19 @@ public class OrderService {
     }    
     
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        log.info("Creating order: {}", orderDTO.getOrderId());
         Order order = new Order();
         order.setOrderId(orderDTO.getOrderId());
         order.setUserId(orderDTO.getUserId());
         order.setTotalAmount(orderDTO.getTotalAmount());
         order.setCurrency(orderDTO.getCurrency());
-        order.setReturnUrl(orderDTO.getReturnUrl());        order.setCustomerEmail(orderDTO.getCustomerEmail());
+        order.setReturnUrl(orderDTO.getReturnUrl());        
+        order.setCustomerEmail(orderDTO.getCustomerEmail());
         order.setShippingAddress(orderDTO.getShippingAddress());
         order.setPaymentMethod(orderDTO.getPaymentMethod());
-
         order.setPaymentId(orderDTO.getPaymentId());
         order.setPaymentStatus(orderDTO.getPaymentStatus());
         order.setPaymentToken(orderDTO.getPaymentToken());
         order.setPaymentUrl(orderDTO.getPaymentUrl());
-        
         order.setCreatedAt(LocalDateTime.now());
         order.setUpdatedAt(LocalDateTime.now());
 
