@@ -33,6 +33,8 @@ public class PagoDTO {
     private String idEstado;
     
     private String idTransaccion;
+
     private LocalDateTime fechaCreacion;
+    
     private LocalDateTime fechaActualizacion;
 }

@@ -33,18 +33,4 @@ public class TransbankController {
         String response = transbankService.confirmTransaction(token);
         return ResponseEntity.ok(response);
     }
-    
-    @GetMapping("/transactions/{token}")
-    public ResponseEntity<PaymentResponseDTO> queryTransaction(@PathVariable String token) {
-        var response = transbankService.queryTransaction(token);
-        PaymentResponseDTO paymentResponse = new PaymentResponseDTO(
-            response.getToken(),
-            response.getUrl(),
-            null, 
-            null, 
-            "SUCCESS",
-            "Transaction queried successfully"
-        );
-        return ResponseEntity.ok(paymentResponse);
-    }
 }

@@ -20,23 +20,18 @@ public class MetodoPagoService {
     MetodoPagoRepository metodoPagoRepository;
 
     public MetodoPagoDTO findMetodoPagoById(Long id) {
-        log.info("Finding metodo pago by id: {}", id);
         Optional<MetodoPago> metodoPago = metodoPagoRepository.findById(id);
 
         MetodoPagoDTO metodoPagoDTO = null;
 
         if(metodoPago.isPresent()){
             metodoPagoDTO = translateEntityToDto(metodoPago.get());
-            log.info("Metodo pago found: {}", metodoPagoDTO);
-        } else {
-            log.warn("Metodo pago not found with id: {}", id);
         }
 
         return metodoPagoDTO;
     }
 
     public List<MetodoPagoDTO> findAllMetodosPago(){
-        log.info("Finding all metodos pago");
         List<MetodoPago> metodosPago = metodoPagoRepository.findAll();
 
         List<MetodoPagoDTO> metodosPagoDTO = new ArrayList<>();
@@ -44,13 +39,10 @@ public class MetodoPagoService {
         for(MetodoPago metodoPago : metodosPago){
             metodosPagoDTO.add(translateEntityToDto(metodoPago));
         }
-
-        log.info("Found {} metodos pago", metodosPagoDTO.size());
         return metodosPagoDTO;
     }
 
     public List<MetodoPagoDTO> findActiveMetodosPago(){
-        log.info("Finding active metodos pago");
         List<MetodoPago> metodosPago = metodoPagoRepository.findByActivoTrue();
 
         List<MetodoPagoDTO> metodosPagoDTO = new ArrayList<>();
@@ -58,22 +50,17 @@ public class MetodoPagoService {
         for(MetodoPago metodoPago : metodosPago){
             metodosPagoDTO.add(translateEntityToDto(metodoPago));
         }
-
-        log.info("Found {} active metodos pago", metodosPagoDTO.size());
         return metodosPagoDTO;
     }
     
     public MetodoPagoDTO createMetodoPago(MetodoPagoDTO metodoPagoDTO) {
-        log.info("Creating new metodo pago: {}", metodoPagoDTO);
         MetodoPago metodoPago = translateDtoToEntity(metodoPagoDTO);
         MetodoPago savedMetodoPago = metodoPagoRepository.save(metodoPago);
         MetodoPagoDTO result = translateEntityToDto(savedMetodoPago);
-        log.info("Metodo pago created successfully with id: {}", result.getId());
         return result;
     }
 
     public MetodoPagoDTO updateMetodoPago(Long id, MetodoPagoDTO metodoPagoDTO) {
-        log.info("Updating metodo pago with id: {} with data: {}", id, metodoPagoDTO);
         Optional<MetodoPago> existingMetodoPago = metodoPagoRepository.findById(id);
 
         MetodoPagoDTO updatedMetodoPagoDTO = null;
@@ -84,16 +71,12 @@ public class MetodoPagoService {
             metodoPago.setFechaCreacion(existingMetodoPago.get().getFechaCreacion());
             MetodoPago updatedMetodoPago = metodoPagoRepository.save(metodoPago);
             updatedMetodoPagoDTO = translateEntityToDto(updatedMetodoPago);
-            log.info("Metodo pago updated successfully: {}", updatedMetodoPagoDTO);
-        } else {
-            log.warn("Cannot update metodo pago - not found with id: {}", id);
         }
 
         return updatedMetodoPagoDTO;
     }
 
     public MetodoPagoDTO deleteMetodoPago(Long id) {
-        log.info("Deleting metodo pago with id: {}", id);
         Optional<MetodoPago> metodoPago = metodoPagoRepository.findById(id);
 
         MetodoPagoDTO metodoPagoDTO = null;
@@ -101,11 +84,8 @@ public class MetodoPagoService {
         if(metodoPago.isPresent()){
             metodoPagoDTO = translateEntityToDto(metodoPago.get());
             metodoPagoRepository.deleteById(id);
-            log.info("Metodo pago deleted successfully: {}", metodoPagoDTO);
             return metodoPagoDTO;
         }
-
-        log.warn("Cannot delete metodo pago - not found with id: {}", id);
         return metodoPagoDTO;
     }
 

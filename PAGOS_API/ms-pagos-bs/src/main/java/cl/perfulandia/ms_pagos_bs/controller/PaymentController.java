@@ -15,20 +15,18 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/payments")
 @RequiredArgsConstructor
-public class SimplePaymentController {
+public class PaymentController {
 
     private final PaymentBusinessService paymentService;
 
     @PostMapping("/initiate")
     public ResponseEntity<PaymentInitiationResponse> initiatePayment(@Valid @RequestBody PaymentRequest request) {
-        log.info("Initiating payment for order: {}", request.getOrderId());
         PaymentInitiationResponse response = paymentService.initiatePayment(request);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/confirm")
     public ResponseEntity<PaymentConfirmationResponse> confirmPayment(@RequestParam String token) {
-        log.info("Confirming payment with token: {}", token);
         PaymentConfirmationResponse response = paymentService.confirmPayment(token);
         return ResponseEntity.ok(response);
     }

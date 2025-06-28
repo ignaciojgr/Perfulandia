@@ -20,39 +20,30 @@ public class EstadoPagoService {
     EstadoPagoRepository estadoPagoRepository;
 
     public EstadoPagoDTO findEstadoPagoById(Long id) {
-        log.info("Finding estado pago by id: {}", id);
         Optional<EstadoPago> estadoPago = estadoPagoRepository.findById(id);
 
         EstadoPagoDTO estadoPagoDTO = null;
 
         if(estadoPago.isPresent()){
             estadoPagoDTO = translateEntityToDto(estadoPago.get());
-            log.info("Estado pago found: {}", estadoPagoDTO);
-        } else {
-            log.warn("Estado pago not found with id: {}", id);
         }
 
         return estadoPagoDTO;
     }
 
     public EstadoPagoDTO findEstadoPagoByCodigo(String codigo) {
-        log.info("Finding estado pago by codigo: {}", codigo);
         Optional<EstadoPago> estadoPago = estadoPagoRepository.findByCodigo(codigo);
 
         EstadoPagoDTO estadoPagoDTO = null;
 
         if(estadoPago.isPresent()){
             estadoPagoDTO = translateEntityToDto(estadoPago.get());
-            log.info("Estado pago found: {}", estadoPagoDTO);
-        } else {
-            log.warn("Estado pago not found with codigo: {}", codigo);
         }
 
         return estadoPagoDTO;
     }
 
     public List<EstadoPagoDTO> findAllEstadosPago(){
-        log.info("Finding all estados pago");
         List<EstadoPago> estadosPago = estadoPagoRepository.findAll();
 
         List<EstadoPagoDTO> estadosPagoDTO = new ArrayList<>();
@@ -60,13 +51,10 @@ public class EstadoPagoService {
         for(EstadoPago estadoPago : estadosPago){
             estadosPagoDTO.add(translateEntityToDto(estadoPago));
         }
-
-        log.info("Found {} estados pago", estadosPagoDTO.size());
         return estadosPagoDTO;
     }
 
     public List<EstadoPagoDTO> findActiveEstadosPago(){
-        log.info("Finding active estados pago");
         List<EstadoPago> estadosPago = estadoPagoRepository.findByActivoTrue();
 
         List<EstadoPagoDTO> estadosPagoDTO = new ArrayList<>();
@@ -74,22 +62,17 @@ public class EstadoPagoService {
         for(EstadoPago estadoPago : estadosPago){
             estadosPagoDTO.add(translateEntityToDto(estadoPago));
         }
-
-        log.info("Found {} active estados pago", estadosPagoDTO.size());
         return estadosPagoDTO;
     }
     
     public EstadoPagoDTO createEstadoPago(EstadoPagoDTO estadoPagoDTO) {
-        log.info("Creating new estado pago: {}", estadoPagoDTO);
         EstadoPago estadoPago = translateDtoToEntity(estadoPagoDTO);
         EstadoPago savedEstadoPago = estadoPagoRepository.save(estadoPago);
         EstadoPagoDTO result = translateEntityToDto(savedEstadoPago);
-        log.info("Estado pago created successfully with id: {}", result.getId());
         return result;
     }
 
     public EstadoPagoDTO updateEstadoPago(Long id, EstadoPagoDTO estadoPagoDTO) {
-        log.info("Updating estado pago with id: {} with data: {}", id, estadoPagoDTO);
         Optional<EstadoPago> existingEstadoPago = estadoPagoRepository.findById(id);
 
         EstadoPagoDTO updatedEstadoPagoDTO = null;
@@ -100,16 +83,12 @@ public class EstadoPagoService {
             estadoPago.setFechaCreacion(existingEstadoPago.get().getFechaCreacion());
             EstadoPago updatedEstadoPago = estadoPagoRepository.save(estadoPago);
             updatedEstadoPagoDTO = translateEntityToDto(updatedEstadoPago);
-            log.info("Estado pago updated successfully: {}", updatedEstadoPagoDTO);
-        } else {
-            log.warn("Cannot update estado pago - not found with id: {}", id);
         }
 
         return updatedEstadoPagoDTO;
     }
 
     public EstadoPagoDTO deleteEstadoPago(Long id) {
-        log.info("Deleting estado pago with id: {}", id);
         Optional<EstadoPago> estadoPago = estadoPagoRepository.findById(id);
 
         EstadoPagoDTO estadoPagoDTO = null;
@@ -117,11 +96,8 @@ public class EstadoPagoService {
         if(estadoPago.isPresent()){
             estadoPagoDTO = translateEntityToDto(estadoPago.get());
             estadoPagoRepository.deleteById(id);
-            log.info("Estado pago deleted successfully: {}", estadoPagoDTO);
             return estadoPagoDTO;
         }
-
-        log.warn("Cannot delete estado pago - not found with id: {}", id);
         return estadoPagoDTO;
     }
 
