@@ -1,4 +1,4 @@
-package cl.perfulandia.ms_orders_bs.config;
+package cl.perfulandia.ms_pagos_db.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -23,8 +23,8 @@ public class SwaggerConfig {
         return new OpenAPI()
             .servers(List.of(new Server().url("http://localhost:" + serverPort)))
             .info(new Info()
-                .title("Orders BFF API")
-                .description("Backend for Frontend service for Orders Management")
+                .title("Payments Database Service")
+                .description("Payments Database Service for writing and reading payments information")
                 .version("1.0.0")
                 .contact(new Contact()
                     .name("Perfulandia Development Team")

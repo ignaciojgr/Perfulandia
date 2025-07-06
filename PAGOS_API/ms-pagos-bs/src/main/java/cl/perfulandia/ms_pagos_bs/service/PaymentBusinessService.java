@@ -23,30 +23,17 @@ public class PaymentBusinessService {
 
             PaymentRequest transbankRequest = buildTransbankRequest(request, savedPago);
             PaymentInitiationResponse transbankResponse = initiateTransbankTransaction(transbankRequest);            
-            String effectiveToken = transbankResponse.getTransbankToken();
+            String token = transbankResponse.getTransbankToken();
             String effectiveUrl = transbankResponse.getReturnUrl();
-            updatePaymentWithToken(savedPago.getId(), effectiveToken);
+            updatePaymentWithToken(savedPago.getId(), token);
 
             transbankResponse.setPaymentId(savedPago.getId().toString());
             transbankResponse.setOrderId(savedPago.getOrderId());
-            transbankResponse.setTransbankToken(effectiveToken);
+            transbankResponse.setTransbankToken(token);
             transbankResponse.setTransbankUrl(effectiveUrl);
-            transbankResponse.setAmount();
+            transbankResponse.setAmount(request.getAmount());
 
-            return PaymentInitiationResponse.builder()
-                    .paymentId(savedPago.getId().toString())
-                    .orderId(request.getOrderId())
-                    .transbankToken(effectiveToken)
-                    .transbankUrl(effectiveUrl)
-                    .token(transbankToken)  
-                    .redirectUrl(effectiveUrl) 
-                    .amount(request.getAmount())
-                    .currency(request.getCurrency())
-                    .status("PENDING")
-                    .message("Payment initiated successfully")
-                    .success(true)
-                    .createdAt(java.time.LocalDateTime.now())
-                    .build();
+            return transbankResponse;
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to initiate payment: " + e.getMessage());
@@ -61,14 +48,9 @@ public class PaymentBusinessService {
             if (confirmation == null) {
                 throw new RuntimeException("No response from Transbank");
             }
-            
-            String newStatus = mapTransbankStatusToPaymentStatus(confirmation.getStatus());
-            
-            PaymentConfirmationResponse paymentConfirmationResponse = new PaymentConfirmationResponse(token, newStatus);
 
             return PaymentConfirmationResponse.builder()
                     .token(token)
-                    .status(newStatus)
                     .build();
 
         } catch (Exception e) {
@@ -120,15 +102,7 @@ public class PaymentBusinessService {
 
     private void updatePaymentWithToken(Long paymentId, String token) {
         PagoDTO updateRequest = new PagoDTO();
-        updateRequest.setIdTransaccion(token);
+        updateRequest.setPaymentId(token);
         pagosDbClient.partialUpdatePago(paymentId, updateRequest);
-    }
-
-    private String mapTransbankStatusToPaymentStatus(String transbankStatus) {
-        return switch (transbankStatus.toUpperCase()) {
-            case "APPROVED", "AUTHORIZED" -> "COMPLETED";
-            case "REJECTED", "FAILED" -> "FAILED";
-            default -> "PENDING";
-        };
-    }    
+    }   
 }
