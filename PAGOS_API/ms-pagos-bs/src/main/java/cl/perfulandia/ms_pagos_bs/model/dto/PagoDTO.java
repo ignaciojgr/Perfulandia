@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PagoDTO {
     private Long id;
-    private String idOrden;
-    private String idUsuario;
+    private String orderId;
+    private String userId;
     private BigDecimal monto;
-    private String idEstado;
-    private String idTransaccion;
+    private String idStatus;
+    private String paymentId;
 }

@@ -2,6 +2,11 @@ package cl.perfulandia.ms_orders_bff.controller;
 
 import cl.perfulandia.ms_orders_bff.model.dto.OrderDTO;
 import cl.perfulandia.ms_orders_bff.service.OrderBffService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,13 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/orders")
 @CrossOrigin(origins = "*")
+@Tag(name="OrdersBFF", description="Orders Backend for Frontend API")
 public class OrderBffController {
 
     @Autowired
     private OrderBffService orderBffService;
 
+    @Operation(summary = "Create a new order", description="Creates a new order with payment processing")
+    @ApiResponses(value = {@ApiResponse(responseCode="201", description = "Order created sucessfully"),
+                        @ApiResponse(responseCode="400", description = "Invalid order data"),
+                        @ApiResponse(responseCode="500", description = "Internal server error")})
+
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
+    public ResponseEntity<OrderDTO> createOrder(@Parameter(description="Order details", required = true) @Valid @RequestBody OrderDTO orderDTO) {
         try {
             OrderDTO createdOrder = orderBffService.createOrder(orderDTO);
             return (createdOrder != null) ? 

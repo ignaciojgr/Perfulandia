@@ -2,6 +2,10 @@ package cl.perfulandia.ms_orders_db.controller;
 
 import cl.perfulandia.ms_orders_db.model.dto.OrderDTO;
 import cl.perfulandia.ms_orders_db.service.OrderService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,11 +17,16 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/orders")
+@Tag(name="OrdersDB", description="Orders Database Microservice")
 public class OrderController {
 
     @Autowired
     OrderService orderService;    
     
+    @Operation(summary = "Fetches order", description="Fetches order by Id")
+    @ApiResponses(value = {@ApiResponse(responseCode="201", description = "Order fetched sucessfully"),
+                        @ApiResponse(responseCode="400", description = "Invalid order data"),
+                        @ApiResponse(responseCode="500", description = "Internal server error")})
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable String orderId) {
         log.info("Fetching order with ID: {}", orderId);

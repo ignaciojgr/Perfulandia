@@ -18,21 +18,27 @@ public class PaymentBusinessService {
     public PaymentInitiationResponse initiatePayment(PaymentRequest request) {
         
         try {
-            PagoDTO pagoDTO = createInitialPaymentRecord(request);
+            PagoDTO pagoDTO = new PagoDTO();
             PagoDTO savedPago = savePagoToDatabase(pagoDTO);
 
-            TransbankInitiationRequest transbankRequest = buildTransbankRequest(request, savedPago);
-            TransbankInitiationResponse transbankResponse = initiateTransbankTransaction(transbankRequest);            
-            String effectiveToken = transbankResponse.getEffectiveToken();
-            String effectiveUrl = transbankResponse.getEffectiveUrl();
+            PaymentRequest transbankRequest = buildTransbankRequest(request, savedPago);
+            PaymentInitiationResponse transbankResponse = initiateTransbankTransaction(transbankRequest);            
+            String effectiveToken = transbankResponse.getTransbankToken();
+            String effectiveUrl = transbankResponse.getReturnUrl();
             updatePaymentWithToken(savedPago.getId(), effectiveToken);
+
+            transbankResponse.setPaymentId(savedPago.getId().toString());
+            transbankResponse.setOrderId(savedPago.getOrderId());
+            transbankResponse.setTransbankToken(effectiveToken);
+            transbankResponse.setTransbankUrl(effectiveUrl);
+            transbankResponse.setAmount();
 
             return PaymentInitiationResponse.builder()
                     .paymentId(savedPago.getId().toString())
                     .orderId(request.getOrderId())
                     .transbankToken(effectiveToken)
                     .transbankUrl(effectiveUrl)
-                    .token(effectiveToken)  
+                    .token(transbankToken)  
                     .redirectUrl(effectiveUrl) 
                     .amount(request.getAmount())
                     .currency(request.getCurrency())
@@ -43,87 +49,72 @@ public class PaymentBusinessService {
                     .build();
 
         } catch (Exception e) {
-            throw new PaymentProcessingException("Failed to initiate payment: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to initiate payment: " + e.getMessage());
         }
     }    
     public PaymentConfirmationResponse confirmPayment(String token) {
         
         try {
             
-            TransbankInitiationResponse confirmation = transbankClient.confirmTransaction(token).getBody();
+            PaymentInitiationResponse confirmation = transbankClient.confirmTransaction(token).getBody();
             
             if (confirmation == null) {
-                throw new PaymentProcessingException("No response from Transbank");
+                throw new RuntimeException("No response from Transbank");
             }
             
             String newStatus = mapTransbankStatusToPaymentStatus(confirmation.getStatus());
             
+            PaymentConfirmationResponse paymentConfirmationResponse = new PaymentConfirmationResponse(token, newStatus);
+
             return PaymentConfirmationResponse.builder()
                     .token(token)
                     .status(newStatus)
-                    .message("Payment " + newStatus.toLowerCase())
                     .build();
 
         } catch (Exception e) {
-            throw new PaymentProcessingException("Failed to confirm payment: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to confirm payment: " + e.getMessage());
         }
-    }
-
-    private PagoDTO createInitialPaymentRecord(PaymentRequest request) {
-        return new PagoDTO(
-                null, 
-                request.getOrderId(),
-                request.getUserId(),
-                request.getAmount(),
-                "PENDING",
-                null 
-        );
     }
 
     private PagoDTO savePagoToDatabase(PagoDTO pagoDTO) {
         PagoDTO saved = pagosDbClient.createPago(pagoDTO).getBody();
         if (saved == null) {
-            throw new PaymentProcessingException("Failed to save payment record");
+            throw new RuntimeException("Failed to save payment record");
         }
         return saved;
     }    
-    private TransbankInitiationRequest buildTransbankRequest(PaymentRequest request, PagoDTO pago) {
-        String buyOrder = "ORD-" + request.getOrderId();
+    private PaymentRequest buildTransbankRequest(PaymentRequest request, PagoDTO pago) {
+        String orderId = "ORD-" + request.getOrderId();
         String sessionId = "SESS-" + pago.getId();
         
-        
-        Long roundedAmount = request.getAmount().setScale(0, java.math.RoundingMode.HALF_UP).longValue();
-        
-        TransbankInitiationRequest transbankRequest = new TransbankInitiationRequest(
-                buyOrder,
+        PaymentRequest transbankRequest = new PaymentRequest(
+                orderId,
                 sessionId,
-                roundedAmount,
+                request.getAmount(),
                 request.getReturnUrl()
         );
         
         return transbankRequest;
     }    
-    private TransbankInitiationResponse initiateTransbankTransaction(TransbankInitiationRequest request) {
+    private PaymentInitiationResponse initiateTransbankTransaction(PaymentRequest request) {
         
-        TransbankInitiationResponse response = transbankClient.initiateTransaction(request).getBody();
+        PaymentInitiationResponse response = transbankClient.initiateTransaction(request).getBody();
         if (response == null) {
-            throw new PaymentProcessingException("No response from Transbank");
+            throw new RuntimeException("No response from Transbank");
         }
         
         
-        String effectiveToken = response.getEffectiveToken();
-        String effectiveUrl = response.getEffectiveUrl();
+        String token = response.getTransbankToken();
+        String returnUrl = response.getReturnUrl();
         
         
-        if (effectiveToken == null || effectiveToken.trim().isEmpty()) {
-            log.error("Transbank response has null or empty token. Full response: {}", response);
-            throw new PaymentProcessingException("Transbank returned invalid token");
+        if (token == null || token.trim().isEmpty()) {
+            throw new RuntimeException("Transbank returned invalid token");
         }
         
-        if (effectiveUrl == null || effectiveUrl.trim().isEmpty()) {
-            throw new PaymentProcessingException("Transbank returned invalid URL");
+        if (returnUrl == null || returnUrl.trim().isEmpty()) {
+            throw new RuntimeException("Transbank returned invalid URL");
         }
-        
         return response;
     }
 
@@ -134,19 +125,10 @@ public class PaymentBusinessService {
     }
 
     private String mapTransbankStatusToPaymentStatus(String transbankStatus) {
-        
         return switch (transbankStatus.toUpperCase()) {
             case "APPROVED", "AUTHORIZED" -> "COMPLETED";
             case "REJECTED", "FAILED" -> "FAILED";
             default -> "PENDING";
         };
     }    
-    public static class PaymentProcessingException extends RuntimeException {
-        public PaymentProcessingException(String message, Throwable cause) {
-            super(message, cause);
-        }
-        public PaymentProcessingException(String message) {
-            super(message);
-        }
-    }
 }
