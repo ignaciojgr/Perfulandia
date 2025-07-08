@@ -102,7 +102,7 @@ public class PaymentBusinessService {
 
     private void updatePaymentWithToken(Long paymentId, String token) {
         PagoDTO updateRequest = new PagoDTO();
-        updateRequest.setPaymentId(token);
+        updateRequest.setTransbankToken(token);
         pagosDbClient.partialUpdatePago(paymentId, updateRequest);
     }   
 }

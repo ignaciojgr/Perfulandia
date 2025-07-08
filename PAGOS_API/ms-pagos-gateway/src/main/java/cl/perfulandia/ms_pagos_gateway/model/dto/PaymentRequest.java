@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -18,14 +17,10 @@ public class PaymentRequest {
     
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
-    private BigDecimal amount;    
-    
-    @NotBlank(message = "Currency is required")
-    private String currency;
+    private Long amount;    
     
     private String customerId;
-    private String userId;
-    private String description;
+
     private String returnUrl;
-    private String cancelUrl;
+    
 }

@@ -1,7 +1,5 @@
 package cl.perfulandia.ms_pagos_db.model.dto;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,11 +28,7 @@ public class PagoDTO {
     private Long monto;
     
     @NotBlank(message = "El estado es requerido")
-    private String idEstado;
+    private String nombreEstado;
     
     private String idTransaccion;
-
-    private LocalDateTime fechaCreacion;
-    
-    private LocalDateTime fechaActualizacion;
 }

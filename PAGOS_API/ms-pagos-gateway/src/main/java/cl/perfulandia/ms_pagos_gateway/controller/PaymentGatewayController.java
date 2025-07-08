@@ -5,11 +5,13 @@ import cl.perfulandia.ms_pagos_gateway.model.dto.PaymentInitiationResponse;
 import cl.perfulandia.ms_pagos_gateway.service.PaymentGatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/payments")
+@Validated
 public class PaymentGatewayController {
     
     @Autowired
@@ -18,7 +20,9 @@ public class PaymentGatewayController {
     @PostMapping("/initiate")
     public ResponseEntity<PaymentInitiationResponse> initiatePayment(@Valid @RequestBody PaymentRequest request) {
         PaymentInitiationResponse response = paymentGatewayService.initiatePayment(request);
-        return (response.isSuccess()) ?
+        return (response.getStatus() == "PENDING" || 
+                response.getStatus() == "INITIATED" || 
+                response.getStatus() == "SUCCESS") ?
             ResponseEntity.ok(response) :
             ResponseEntity.badRequest().body(response);
     }

@@ -3,7 +3,6 @@ package cl.perfulandia.ms_pagos_bs.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +11,7 @@ public class PagoDTO {
     private Long id;
     private String orderId;
     private String userId;
-    private BigDecimal monto;
+    private Long monto;
     private String idStatus;
-    private String paymentId;
+    private String transbankToken;
 }

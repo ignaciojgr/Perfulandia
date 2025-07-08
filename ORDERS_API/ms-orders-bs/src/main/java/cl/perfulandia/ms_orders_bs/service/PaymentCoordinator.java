@@ -39,10 +39,7 @@ public class PaymentCoordinator {
         request.setOrderId(order.getOrderId());
         request.setUserId(order.getUserId());
         request.setAmount(order.getTotalAmount());
-        request.setCurrency(order.getCurrency());
-        request.setRedirectUrl(order.getReturnUrl());
-        request.setCustomerEmail(order.getCustomerEmail());
-        request.setDescription("Payment for order: " + order.getOrderId());
+        request.setReturnUrl(order.getReturnUrl());
         return request;
     }    
 

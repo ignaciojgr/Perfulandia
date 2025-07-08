@@ -80,7 +80,6 @@ public class EstadoPagoService {
         if(existingEstadoPago.isPresent()) {
             EstadoPago estadoPago = translateDtoToEntity(estadoPagoDTO);
             estadoPago.setId(id);
-            estadoPago.setFechaCreacion(existingEstadoPago.get().getFechaCreacion());
             EstadoPago updatedEstadoPago = estadoPagoRepository.save(estadoPago);
             updatedEstadoPagoDTO = translateEntityToDto(updatedEstadoPago);
         }
@@ -103,22 +102,14 @@ public class EstadoPagoService {
 
     private EstadoPago translateDtoToEntity(EstadoPagoDTO estadoPagoDTO) {
         EstadoPago estadoPago = new EstadoPago();
-        estadoPago.setCodigo(estadoPagoDTO.getCodigo());
         estadoPago.setNombre(estadoPagoDTO.getNombre());
-        estadoPago.setDescripcion(estadoPagoDTO.getDescripcion());
-        estadoPago.setActivo(estadoPagoDTO.getActivo() != null ? estadoPagoDTO.getActivo() : true);
         return estadoPago;
     }
 
     public EstadoPagoDTO translateEntityToDto(EstadoPago estadoPago){
         EstadoPagoDTO estadoPagoDTO = new EstadoPagoDTO();
         estadoPagoDTO.setId(estadoPago.getId());
-        estadoPagoDTO.setCodigo(estadoPago.getCodigo());
         estadoPagoDTO.setNombre(estadoPago.getNombre());
-        estadoPagoDTO.setDescripcion(estadoPago.getDescripcion());
-        estadoPagoDTO.setActivo(estadoPago.getActivo());
-        estadoPagoDTO.setFechaCreacion(estadoPago.getFechaCreacion());
-        estadoPagoDTO.setFechaActualizacion(estadoPago.getFechaActualizacion());
         return estadoPagoDTO;
     }
 }

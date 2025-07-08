@@ -68,7 +68,6 @@ public class MetodoPagoService {
         if(existingMetodoPago.isPresent()) {
             MetodoPago metodoPago = translateDtoToEntity(metodoPagoDTO);
             metodoPago.setId(id);
-            metodoPago.setFechaCreacion(existingMetodoPago.get().getFechaCreacion());
             MetodoPago updatedMetodoPago = metodoPagoRepository.save(metodoPago);
             updatedMetodoPagoDTO = translateEntityToDto(updatedMetodoPago);
         }
@@ -92,8 +91,6 @@ public class MetodoPagoService {
     private MetodoPago translateDtoToEntity(MetodoPagoDTO metodoPagoDTO) {
         MetodoPago metodoPago = new MetodoPago();
         metodoPago.setNombre(metodoPagoDTO.getNombre());
-        metodoPago.setDescripcion(metodoPagoDTO.getDescripcion());
-        metodoPago.setActivo(metodoPagoDTO.getActivo() != null ? metodoPagoDTO.getActivo() : true);
         return metodoPago;
     }
 
@@ -101,10 +98,6 @@ public class MetodoPagoService {
         MetodoPagoDTO metodoPagoDTO = new MetodoPagoDTO();
         metodoPagoDTO.setId(metodoPago.getId());
         metodoPagoDTO.setNombre(metodoPago.getNombre());
-        metodoPagoDTO.setDescripcion(metodoPago.getDescripcion());
-        metodoPagoDTO.setActivo(metodoPago.getActivo());
-        metodoPagoDTO.setFechaCreacion(metodoPago.getFechaCreacion());
-        metodoPagoDTO.setFechaActualizacion(metodoPago.getFechaActualizacion());
         return metodoPagoDTO;
     }
 }

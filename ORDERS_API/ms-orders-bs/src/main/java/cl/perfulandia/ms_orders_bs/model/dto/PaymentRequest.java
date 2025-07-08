@@ -23,11 +23,9 @@ public class PaymentRequest {
     @Positive(message = "Amount must be positive")
     private BigDecimal amount;
     
-    private String currency;
+    @NotBlank(message = "Return URL is required")
+    private String returnUrl;
     
-    @NotBlank(message = "Redirect URL is required")
-    private String redirectUrl;
-    
-    private String customerEmail;
-    private String description;    
+
+  
 }

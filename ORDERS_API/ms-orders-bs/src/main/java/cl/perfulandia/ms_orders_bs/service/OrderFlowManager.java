@@ -95,19 +95,4 @@ public class OrderFlowManager {
     private String generateOrderId() {
         return "ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
-
-    private Long mapStatusToCode(String status) {
-        switch (status) {
-            case "CREATED": return 1L;
-            case "PAYMENT_INITIATED": return 2L;
-            case "PAYMENT_CONFIRMED": return 3L;
-            case "PROCESSING": return 4L;
-            case "SHIPPED": return 5L;
-            case "DELIVERED": return 6L;
-            case "CANCELLED": return 7L;
-            case "FAILED": return 8L;
-            default: 
-                return 1L; 
-        }
-    }
 }

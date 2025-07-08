@@ -23,9 +23,6 @@ public class EstadoPago {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "codigo", nullable = false, unique = true, length = 20)
-    private String codigo;
-
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;  
 }

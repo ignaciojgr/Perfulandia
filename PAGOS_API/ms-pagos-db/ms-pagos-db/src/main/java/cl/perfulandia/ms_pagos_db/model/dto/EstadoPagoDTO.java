@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EstadoPagoDTO {
     private Long id;
-    private String codigo;
     private String nombre;
 }
