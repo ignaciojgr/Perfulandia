@@ -124,7 +124,6 @@ public class AuthService {
         return new TokenResponseDTO(token);
 
     }
-
     private String generateGuestId() {
     return "GUEST-" + System.currentTimeMillis() + "-" + 
            java.util.UUID.randomUUID().toString().substring(0, 8);
