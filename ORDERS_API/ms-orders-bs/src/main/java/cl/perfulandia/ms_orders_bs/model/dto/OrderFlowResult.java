@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class OrderFlowResult {
     private String orderId;
     private String userId;
-    private boolean success;
     private OrderDTO finalOrder;
     private PaymentInitiationResponse paymentResponse;
 

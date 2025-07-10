@@ -3,7 +3,6 @@ package cl.perfulandia.ms_orders_bs.model.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public class OrderDTO {
     private String orderId;
     private String userId;
-    private BigDecimal totalAmount;
+    private Long totalAmount;
     private String currency;
     private String returnUrl;
     private List<OrderItemDTO> items;

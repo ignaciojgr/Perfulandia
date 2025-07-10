@@ -58,9 +58,8 @@ public class OrderFlowManager {
             createdOrder.setPaymentStatus(paymentResponse.getStatus());
             createdOrder.setPaymentToken(paymentResponse.getToken());
             createdOrder.setPaymentUrl(paymentResponse.getRedirectUrl());
-            
-            Long statusCode = mapStatusToCode("PAYMENT_INITIATED");
-            ordersDbClient.updateOrderStatus(createdOrder.getOrderId(), statusCode);
+            createdOrder.setPaymentStatus(paymentResponse.getStatus());
+            ordersDbClient.updateOrderStatus(createdOrder.getOrderId(), createdOrder.getStatus());
 
             OrderDTO updatedOrderRequest = new OrderDTO();
             updatedOrderRequest.setOrderId(createdOrder.getOrderId());

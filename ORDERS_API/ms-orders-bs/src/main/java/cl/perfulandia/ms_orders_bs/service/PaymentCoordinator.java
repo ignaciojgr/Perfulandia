@@ -51,12 +51,8 @@ public class PaymentCoordinator {
         if (request.getAmount() == null || request.getAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
             throw new RuntimeException("Valid amount is required for payment");
         }
-          if (request.getRedirectUrl() == null || request.getRedirectUrl().trim().isEmpty()) {
+          if (request.getReturnUrl() == null || request.getReturnUrl().trim().isEmpty()) {
             throw new RuntimeException("Redirect URL is required for payment");
-        }
-        
-        if (request.getCurrency() == null || request.getCurrency().trim().isEmpty()) {
-            throw new RuntimeException("Currency is required for payment");
         }
     }
 

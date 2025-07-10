@@ -42,22 +42,6 @@ public class OrderBusinessService {
         return ordersDbClient.getOrdersByUserId(userId).getBody();
     }    
     public OrderDTO updateOrderStatus(String orderId, String status) {
-        Long statusCode = mapStatusToCode(status);
-        return ordersDbClient.updateOrderStatus(orderId, statusCode).getBody();
-    }
-
-    private Long mapStatusToCode(String status) {
-        switch (status) {
-            case "CREATED": return 1L;
-            case "PAYMENT_INITIATED": return 2L;
-            case "PAYMENT_CONFIRMED": return 3L;
-            case "PROCESSING": return 4L;
-            case "SHIPPED": return 5L;
-            case "DELIVERED": return 6L;
-            case "CANCELLED": return 7L;
-            case "FAILED": return 8L;
-            default: 
-                return 1L;
-        }
+        return ordersDbClient.updateOrderStatus(orderId, status).getBody();
     }
 }

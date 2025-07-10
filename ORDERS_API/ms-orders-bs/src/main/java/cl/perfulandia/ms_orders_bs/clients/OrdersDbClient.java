@@ -23,7 +23,7 @@ public interface OrdersDbClient {
     ResponseEntity<OrderDTO> updateOrder(@PathVariable String orderId, @RequestBody OrderDTO orderDTO);
 
     @PutMapping("/api/v1/orders/{orderId}/status/{statusCode}")
-    ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable String orderId, @PathVariable Long statusCode);
+    ResponseEntity<OrderDTO> updateOrderStatus(@PathVariable String orderId, @PathVariable String name);
 
     @DeleteMapping("/api/v1/orders/{orderId}")
     ResponseEntity<Void> deleteOrder(@PathVariable String orderId);
